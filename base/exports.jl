@@ -888,6 +888,7 @@ export
     names,
     module_name,
     module_parent,
+    ver,
     which,
     whicht,
     whos,
