@@ -484,16 +484,17 @@ end
 # ppmwrite(indexedcolor(m, palette_fire), "mandel.ppm")
 
 function imread(file::String)
-    cmd = `convert -format "%w %h" -identify $file rgb:-`
+    cmd = `convert $file -format "%w\n%h\n%n\n%m" -identify gray:-`
     stream, _ = readsfrom(cmd)
     spawn(cmd)
-    szline = readline(stream)
-    spc = strchr(szline, ' ')
-    w = parse_int(szline[1:spc-1])
-    h = parse_int(szline[spc+1:end-1])
-    img = Array(Float64, h, w, 3)
-    for i=1:h, j=1:w, k = 1:3
-        img[i,j,k] = float64(read(stream, Uint8))/255.0
+    w = parse_int(readline(stream))
+    h = parse_int(readline(stream))
+    f = parse_int(readline(stream))
+    imtype = readline(stream)
+    pixdepth = readline(stream)
+    img = Array(Uint8, h, w)
+    for i=1:h, j=1:w
+        img[i,j] = read(stream, Uint8)
     end
     img
 end
